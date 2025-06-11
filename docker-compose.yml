@@ -4,13 +4,13 @@ services:
       context: ./user-service
       dockerfile: Dockerfile
     container_name: user-service
+    ports:
+      - "8081:8081"
     environment:
       MONGO_HOST: mongo
       MONGO_PORT: 27017
       MONGO_USERNAME: ${MONGO_USERNAME}
       MONGO_PASSWORD: ${MONGO_PASSWORD}
-    ports:
-      - "8081:8081"
     depends_on:
       - mongo
     networks:
@@ -51,13 +51,13 @@ services:
       context: ./product-catalog-service
       dockerfile: Dockerfile
     container_name: product-catalog-service
+    ports:
+      - "8082:8082"
     environment:
       PRODUCT_DB_HOST: product_db
       PRODUCT_DB_PORT: 5401
       PRODUCT_DB_USERNAME: ${PRODUCT_DB_USERNAME}
       PRODUCT_DB_PASSWORD: ${PRODUCT_DB_PASSWORD}
-    ports:
-      - "8082:8082"
     depends_on:
       - product_db
     networks:
@@ -78,6 +78,38 @@ services:
     volumes:
       - product-db-data:/bitnami/postgresql
 
+  shopping-cart-service:
+    build:
+      context: ./shopping-cart-service
+      dockerfile: Dockerfile
+    container_name: shopping-cart-service
+    ports:
+      - "8083:8083"
+    environment:
+      CART_DB_HOST: cart_db
+      CART_DB_PORT: 5402
+      CART_DB_USERNAME: ${CART_DB_USERNAME}
+      CART_DB_PASSWORD: ${CART_DB_PASSWORD}
+    depends_on:
+      - cart_db
+    networks:
+      - app-network
+
+  cart_db:
+    image: bitnami/postgresql:latest
+    container_name: cart_db
+    ports:
+      - "5402:5402"
+    environment:
+      POSTGRESQL_PORT_NUMBER: 5402
+      POSTGRESQL_DATABASE: cart_db
+      POSTGRESQL_USERNAME: ${CART_DB_USERNAME}
+      POSTGRESQL_PASSWORD: ${CART_DB_PASSWORD}
+    networks:
+      - app-network
+    volumes:
+      - cart-db-data:/bitnami/postgresql
+
 networks:
   app-network:
     driver: bridge
@@ -86,3 +118,4 @@ volumes:
   mongo-data:
   mongo-config:
   product-db-data:
+  cart-db-data:

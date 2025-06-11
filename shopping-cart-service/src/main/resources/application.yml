@@ -4,3 +4,7 @@ server:
 spring:
   application:
     name: shopping-cart-service
+  datasource:
+    url: jdbc:postgresql://${CART_DB_HOST:localhost}:${CART_DB_PORT:5402}/cart_db
+    username: ${CART_DB_USERNAME:cart-db-username}
+    password: ${CART_DB_PASSWORD:cart-db-password}

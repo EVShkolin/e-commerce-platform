@@ -43,6 +43,20 @@ services:
     volumes:
       - product-db-data:/bitnami/postgresql
 
+  cart_db:
+    image: bitnami/postgresql:latest
+    container_name: cart_db
+    ports:
+      - "5402:5432"
+    environment:
+      POSTGRESQL_DATABASE: cart_db
+      POSTGRESQL_USERNAME: ${CART_DB_USERNAME}
+      POSTGRESQL_PASSWORD: ${CART_DB_PASSWORD}
+    networks:
+      - app-network
+    volumes:
+      - cart-db-data:/bitnami/postgresql
+
 networks:
   app-network:
     driver: bridge
@@ -51,3 +65,4 @@ volumes:
   mongo-data:
   mongo-config:
   product-db-data:
+  cart-db-data:
