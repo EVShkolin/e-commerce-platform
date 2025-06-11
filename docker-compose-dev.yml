@@ -42,6 +42,8 @@ services:
       - app-network
     volumes:
       - product-db-data:/bitnami/postgresql
+      - tmp1:/docker-entrypoint-initdb.d
+      - tmp1:/docker-entrypoint-preinitdb.d
 
   cart_db:
     image: bitnami/postgresql:latest
@@ -56,6 +58,24 @@ services:
       - app-network
     volumes:
       - cart-db-data:/bitnami/postgresql
+      - tmp1:/docker-entrypoint-initdb.d
+      - tmp1:/docker-entrypoint-preinitdb.d
+
+  order_db:
+    image: bitnami/postgresql:latest
+    container_name: order_db
+    ports:
+      - "5403:5432"
+    environment:
+      POSTGRESQL_DATABASE: order_db
+      POSTGRESQL_USERNAME: ${ORDER_DB_USERNAME}
+      POSTGRESQL_PASSWORD: ${ORDER_DB_PASSWORD}
+    networks:
+      - app-network
+    volumes:
+      - order-db-data:/bitnami/postgresql
+      - tmp1:/docker-entrypoint-initdb.d
+      - tmp1:/docker-entrypoint-preinitdb.d
 
 networks:
   app-network:
@@ -66,3 +86,9 @@ volumes:
   mongo-config:
   product-db-data:
   cart-db-data:
+  order-db-data:
+  tmp1:
+    driver: local
+    driver_opts:
+      type: tmpfs
+      device: tmpfs
