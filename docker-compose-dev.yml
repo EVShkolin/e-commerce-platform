@@ -1,21 +1,4 @@
 services:
-  user-service:
-    build:
-      context: ./user-service
-      dockerfile: Dockerfile
-    container_name: user-service
-    ports:
-      - "8081:8081"
-    environment:
-      MONGO_HOST: mongo
-      MONGO_PORT: 27017
-      MONGO_USERNAME: ${MONGO_USERNAME}
-      MONGO_PASSWORD: ${MONGO_PASSWORD}
-    depends_on:
-      - mongo
-    networks:
-      - app-network
-
   mongo:
     image: mongo:6
     container_name: mongo_db
@@ -46,30 +29,12 @@ services:
     networks:
       - app-network
 
-  product-catalog-service:
-    build:
-      context: ./product-catalog-service
-      dockerfile: Dockerfile
-    container_name: product-catalog-service
-    ports:
-      - "8082:8082"
-    environment:
-      PRODUCT_DB_HOST: product_db
-      PRODUCT_DB_PORT: 5401
-      PRODUCT_DB_USERNAME: ${PRODUCT_DB_USERNAME}
-      PRODUCT_DB_PASSWORD: ${PRODUCT_DB_PASSWORD}
-    depends_on:
-      - product_db
-    networks:
-      - app-network
-
   product_db:
     image: bitnami/postgresql:latest
     container_name: product_db
     ports:
-      - "5401:5401"
+      - "5401:5432"
     environment:
-      POSTGRESQL_PORT_NUMBER: 5401
       POSTGRESQL_DATABASE: product_db
       POSTGRESQL_USERNAME: ${PRODUCT_DB_USERNAME}
       POSTGRESQL_PASSWORD: ${PRODUCT_DB_PASSWORD}
@@ -80,30 +45,12 @@ services:
       - tmp1:/docker-entrypoint-initdb.d
       - tmp1:/docker-entrypoint-preinitdb.d
 
-  shopping-cart-service:
-    build:
-      context: ./shopping-cart-service
-      dockerfile: Dockerfile
-    container_name: shopping-cart-service
-    ports:
-      - "8083:8083"
-    environment:
-      CART_DB_HOST: cart_db
-      CART_DB_PORT: 5402
-      CART_DB_USERNAME: ${CART_DB_USERNAME}
-      CART_DB_PASSWORD: ${CART_DB_PASSWORD}
-    depends_on:
-      - cart_db
-    networks:
-      - app-network
-
   cart_db:
     image: bitnami/postgresql:latest
     container_name: cart_db
     ports:
-      - "5402:5402"
+      - "5402:5432"
     environment:
-      POSTGRESQL_PORT_NUMBER: 5402
       POSTGRESQL_DATABASE: cart_db
       POSTGRESQL_USERNAME: ${CART_DB_USERNAME}
       POSTGRESQL_PASSWORD: ${CART_DB_PASSWORD}
@@ -114,30 +61,12 @@ services:
       - tmp1:/docker-entrypoint-initdb.d
       - tmp1:/docker-entrypoint-preinitdb.d
 
-  order-service:
-    build:
-      context: ./order-service
-      dockerfile: Dockerfile
-    container_name: order-service
-    ports:
-      - "8084:8084"
-    environment:
-      ORDER_DB_HOST: order_db
-      ORDER_DB_PORT: 5403
-      ORDER_DB_USERNAME: ${ORDER_DB_USERNAME}
-      ORDER_DB_PASSWORD: ${ORDER_DB_PASSWORD}
-    depends_on:
-      - order_db
-    networks:
-      - app-network
-
   order_db:
     image: bitnami/postgresql:latest
     container_name: order_db
     ports:
-      - "5403:5403"
+      - "5403:5432"
     environment:
-      POSTGRESQL_PORT_NUMBER: 5403
       POSTGRESQL_DATABASE: order_db
       POSTGRESQL_USERNAME: ${ORDER_DB_USERNAME}
       POSTGRESQL_PASSWORD: ${ORDER_DB_PASSWORD}
