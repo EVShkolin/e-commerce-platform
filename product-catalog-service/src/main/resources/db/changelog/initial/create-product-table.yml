@@ -1,0 +1,54 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-product
+      author: EV
+      changes:
+        - createTable:
+            tableName: product
+            columns:
+              - column:
+                  name: product_id
+                  type: BIGSERIAL
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+                  autoIncrement: true
+              - column:
+                  name: name
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: description
+                  type: TEXT
+              - column:
+                  name: rating
+                  type: NUMERIC(3,2)
+                  constraints:
+                    nullable: true
+                    checkConstraint: "rating is NULL OR (rating >= 1.00 AND rating <= 5.00"
+              - column:
+                  name: price
+                  type: NUMERIC(15,2)
+                  constraints:
+                    nullable: false
+                    checkConstraint: "price >= 0"
+              - column:
+                  name: category
+                  type: VARCHAR(100)
+              - column:
+                  name: stockQuantity
+                  type: INTEGER
+                  constraints:
+                    nullable: false
+                    checkConstraint: "price >= 0"
+              - column:
+                  name: active
+                  type: BOOLEAN
+                  constraints:
+                    nullable: false
+                  defaultOnNull: true
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  defaultValueComputed: CURRENT_TIMESTAMP

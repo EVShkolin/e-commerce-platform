@@ -1,0 +1,21 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-order
+      author: EV
+      changes:
+        - createTable:
+            tableName: order
+            columns:
+              - column:
+                  name: order_id
+                  type: BIGSERIAL
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+                  autoIncrement: true
+              - column:
+                  name: user_id
+                  type: VARCHAR(36)
+                  constraints:
+                    nullable: false
+              

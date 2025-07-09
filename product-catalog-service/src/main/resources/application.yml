@@ -8,3 +8,5 @@ spring:
     url: jdbc:postgresql://${PRODUCT_DB_HOST:localhost}:${PRODUCT_DB_PORT:5401}/product_db
     username: ${PRODUCT_DB_USERNAME:product-db-username}
     password: ${PRODUCT_DB_PASSWORD:product-db-password}
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.yml
