@@ -8,47 +8,52 @@ databaseChangeLog:
             columns:
               - column:
                   name: product_id
-                  type: BIGSERIAL
+                  type: bigserial
                   constraints:
                     primaryKey: true
                     nullable: false
-                  autoIncrement: true
               - column:
                   name: name
-                  type: VARCHAR(255)
+                  type: varchar(255)
                   constraints:
                     nullable: false
               - column:
                   name: description
-                  type: TEXT
-              - column:
-                  name: rating
-                  type: NUMERIC(3,2)
+                  type: text
                   constraints:
                     nullable: true
-                    checkConstraint: "rating is NULL OR (rating >= 1.00 AND rating <= 5.00"
+              - column:
+                  name: rating
+                  type: numeric(3,2)
+                  constraints:
+                    nullable: true
+                    checkConstraint: "rating is NULL OR (rating >= 1.00 AND rating <= 5.00)"
               - column:
                   name: price
-                  type: NUMERIC(15,2)
+                  type: numeric(15,2)
                   constraints:
                     nullable: false
                     checkConstraint: "price >= 0"
               - column:
                   name: category
-                  type: VARCHAR(100)
+                  type: varchar(100)
+                  constraints:
+                    nullable: true
               - column:
                   name: stockQuantity
-                  type: INTEGER
+                  type: integer
                   constraints:
                     nullable: false
                     checkConstraint: "price >= 0"
               - column:
                   name: active
-                  type: BOOLEAN
+                  type: boolean
+                  defaultOnNull: true
                   constraints:
                     nullable: false
-                  defaultOnNull: true
               - column:
                   name: created_at
-                  type: TIMESTAMP
+                  type: timestamp with time zone
                   defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
