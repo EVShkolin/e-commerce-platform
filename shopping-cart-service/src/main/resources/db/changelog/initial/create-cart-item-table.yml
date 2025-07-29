@@ -1,0 +1,37 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-cart-item
+      author: EV
+      changes:
+        - createTable:
+            tableName: cart_item
+            columns:
+              - column:
+                  name: cart_item_id
+                  type: bigserial
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: cart_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: product_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: quantity
+                  type: int
+                  constraints:
+                    nullable: false
+                    checkConstraint: "quantity > 0"
+        - addForeignKeyConstraint:
+            referencedTableName: cart
+            referencedColumnNames: cart_id
+            baseTableName: cart_item
+            baseColumnNames: cart_id
+            constraintName: fk_cart_item_cart
+            onDelete: CASCADE

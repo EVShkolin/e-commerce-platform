@@ -1,0 +1,61 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-order
+      author: EV
+      changes:
+        - createTable:
+            tableName: order
+            columns:
+              - column:
+                  name: order_id
+                  type: bigserial
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: varchar(36)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: payment_id
+                  type: bigint
+                  constraints:
+                    nullable: true
+              - column:
+                  name: status
+                  type: varchar(20)
+                  constraints:
+                    nullable: false
+                    checkConstraint: "status IN ('CREATED','PAYMENT_PENDING','PAYMENT_FAILED','PAID','PROCESSING','OUT_FOR_DELIVERY','DELIVERED','CANCELLED')"
+              - column:
+                  name: recipient_name
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: shipping_address
+                  type: text
+                  constraints:
+                    nullable: false
+              - column:
+                  name: phone_number
+                  type: varchar(20)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: total_amount
+                  type: numeric(15, 2)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: timestamp with time zone
+                  defaultValueComputed: CURRENT_TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_at
+                  type: timestamp with time zone
+                  constraints:
+                    nullable: true

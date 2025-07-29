@@ -1,0 +1,24 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-cart
+      author: EV
+      changes:
+        - createTable:
+            tableName: cart
+            columns:
+              - column:
+                  name: cart_id
+                  type: bigserial
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: varchar(36)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_at
+                  type: timestamp with time zone
+                  constraints:
+                    nullable: true

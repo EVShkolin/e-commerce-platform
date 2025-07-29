@@ -1,0 +1,48 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-order-item
+      author: EV
+      changes:
+        - createTable:
+            tableName: order_item
+            columns:
+              - column:
+                  name: order_item_id
+                  type: bigserial
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: order_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: product_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: product_name
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: quantity
+                  type: integer
+                  constraints:
+                    nullable: false
+              - column:
+                  name: price_snapshot
+                  type: numeric(19, 2)
+                  constraints:
+                    nullable: false
+
+        - addForeignKeyConstraint:
+            referencedTableName: order
+            referencedColumnNames: order_id
+            baseTableName: order_item
+            baseColumnNames: order_id
+            constraintName: fk_order_item_order
+            onDelete: CASCADE
+            onUpdate: RESTRICT
