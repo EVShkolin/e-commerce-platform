@@ -1,19 +1,19 @@
 databaseChangeLog:
   - changeSet:
-      id: create-order-item
+      id: create-cart-item
       author: EV
       changes:
         - createTable:
-            tableName: order_item
+            tableName: cart_item
             columns:
               - column:
-                  name: order_item_id
+                  name: cart_item_id
                   type: bigserial
                   constraints:
                     primaryKey: true
                     nullable: false
               - column:
-                  name: order_id
+                  name: cart_id
                   type: bigint
                   constraints:
                     nullable: false
@@ -23,26 +23,15 @@ databaseChangeLog:
                   constraints:
                     nullable: false
               - column:
-                  name: product_name
-                  type: varchar(255)
-                  constraints:
-                    nullable: false
-              - column:
                   name: quantity
-                  type: integer
+                  type: int
                   constraints:
                     nullable: false
-              - column:
-                  name: price_snapshot
-                  type: numeric(19, 2)
-                  constraints:
-                    nullable: false
-
+                    checkConstraint: "quantity > 0"
         - addForeignKeyConstraint:
-            referencedTableName: order
-            referencedColumnNames: order_id
-            baseTableName: order_item
-            baseColumnNames: order_id
-            constraintName: fk_order_item_order
+            referencedTableName: cart
+            referencedColumnNames: cart_id
+            baseTableName: cart_item
+            baseColumnNames: cart_id
+            constraintName: fk_cart_item_cart
             onDelete: CASCADE
-            onUpdate: RESTRICT
