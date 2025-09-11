@@ -40,14 +40,13 @@ databaseChangeLog:
                   constraints:
                     nullable: true
               - column:
-                  name: stock_quantity
-                  type: integer
-                  constraints:
-                    nullable: false
-                    checkConstraint: "stock_quantity >= 0"
-              - column:
                   name: created_at
                   type: timestamp with time zone
                   defaultValueComputed: CURRENT_TIMESTAMP
                   constraints:
                     nullable: false
+              - column:
+                  name: updated_at
+                  type: timestamp with time zone
+                  constraints:
+                    nullable: true
