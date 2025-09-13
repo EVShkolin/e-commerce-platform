@@ -23,14 +23,14 @@ public class ProductServiceImpl implements ProductService{
     @Override
     @Transactional(readOnly = true)
     public Page<ProductDto> findAll(Pageable pageable) {
-        log.info("IN ProductServiceImpl findAll");
+        log.debug("IN ProductServiceImpl findAll");
         return productMapper.toDtoPage(productRepository.findAll(pageable));
     }
 
     @Override
     @Transactional(readOnly = true)
     public ProductDto findById(Long id) {
-        log.info("IN ProductServiceImpl findById {}", id);
+        log.debug("IN ProductServiceImpl findById {}", id);
         return productRepository.findById(id)
                 .map(productMapper::toDto)
                 .orElseThrow(() -> new ProductNotFoundException(id));

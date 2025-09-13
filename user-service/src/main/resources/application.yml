@@ -10,5 +10,9 @@ spring:
       username: ${MONGO_USERNAME:mongo-username}
       password: ${MONGO_PASSWORD:mongo-password}
       authentication-database: admin
+      auto-index-creation: true
   application:
     name: user-service
+logging:
+  level:
+    org.project.userservice: DEBUG
