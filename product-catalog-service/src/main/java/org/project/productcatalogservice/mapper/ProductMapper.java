@@ -7,6 +7,8 @@ import org.project.productcatalogservice.dto.ProductDto;
 import org.project.productcatalogservice.model.Product;
 import org.springframework.data.domain.Page;
 
+import java.util.List;
+
 @Mapper(componentModel = "spring")
 public interface ProductMapper {
 
@@ -15,6 +17,8 @@ public interface ProductMapper {
     @Mapping(target = "updatedAt",ignore = true)
     @Mapping(target = "createdAt",ignore = true)
     Product toEntity(ProductDto productDto);
+
+    List<ProductDto> toDtoList(List<Product> products);
 
     default Page<ProductDto> toDtoPage(Page<Product> productPage) {
         return productPage.map(this::toDto);

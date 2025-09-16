@@ -24,8 +24,6 @@ public class User {
     @Indexed(unique = true, name = "email_index")
     private String email;
 
-    private String phoneNumber;
-
     @CreatedDate
     private Instant registrationDate;
 
