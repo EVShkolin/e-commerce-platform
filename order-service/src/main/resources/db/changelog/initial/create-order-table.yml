@@ -4,7 +4,7 @@ databaseChangeLog:
       author: EV
       changes:
         - createTable:
-            tableName: order
+            tableName: orders
             columns:
               - column:
                   name: order_id
@@ -18,16 +18,11 @@ databaseChangeLog:
                   constraints:
                     nullable: false
               - column:
-                  name: payment_id
-                  type: bigint
-                  constraints:
-                    nullable: true
-              - column:
                   name: status
                   type: varchar(20)
                   constraints:
                     nullable: false
-                    checkConstraint: "status IN ('CREATED','PAYMENT_PENDING','PAYMENT_FAILED','PAID','PROCESSING','OUT_FOR_DELIVERY','DELIVERED','CANCELLED')"
+                    checkConstraint: "status IN ('CREATED', 'PAID')"
               - column:
                   name: recipient_name
                   type: varchar(255)

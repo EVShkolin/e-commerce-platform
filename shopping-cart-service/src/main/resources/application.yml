@@ -10,3 +10,7 @@ spring:
     password: ${CART_DB_PASSWORD:cart-db-password}
   liquibase:
     change-log: classpath:db/changelog/db.changelog-master.yml
+
+service:
+  product-catalog:
+    base-url: ${PRODUCT_CATALOG_BASE_URL:http://localhost:8082/api/v1/products}
