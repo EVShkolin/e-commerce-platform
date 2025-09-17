@@ -10,7 +10,7 @@ import java.math.BigDecimal;
 
 @Data
 @AllArgsConstructor
-public class ProductDto {
+public class ExternalProductDto {
 
     private Long id;
 

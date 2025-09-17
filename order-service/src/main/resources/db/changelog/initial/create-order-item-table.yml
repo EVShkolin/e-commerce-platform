@@ -39,7 +39,7 @@ databaseChangeLog:
                     nullable: false
 
         - addForeignKeyConstraint:
-            referencedTableName: order
+            referencedTableName: orders
             referencedColumnNames: order_id
             baseTableName: order_item
             baseColumnNames: order_id

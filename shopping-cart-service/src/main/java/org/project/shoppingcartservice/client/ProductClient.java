@@ -1,6 +1,6 @@
 package org.project.shoppingcartservice.client;
 
-import org.project.shoppingcartservice.dto.ProductDto;
+import org.project.shoppingcartservice.dto.ExternalProductDto;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.MediaType;
@@ -21,7 +21,7 @@ public class ProductClient {
                 .build();
     }
 
-    public List<ProductDto> findProductsByIds(List<Long> productIds) {
+    public List<ExternalProductDto> findProductsByIds(List<Long> productIds) {
         return restClient.post()
                 .uri("/batch")
                 .contentType(MediaType.APPLICATION_JSON)

@@ -17,14 +17,14 @@ public class CartDto {
     @NotBlank
     private String userId;
 
-    private BigDecimal totalSum;
+    private BigDecimal totalAmount;
 
     private List<CartItemDto> items;
 
     public CartDto(String userId) {
         this.userId = userId;
         items = new ArrayList<>();
-        totalSum = BigDecimal.ZERO;
+        totalAmount = BigDecimal.ZERO;
     }
 
     public void setItems(List<CartItemDto> items) {
@@ -33,7 +33,7 @@ public class CartDto {
     }
 
     public void calculateTotal() {
-        totalSum = items.stream()
+        totalAmount = items.stream()
                 .map(item -> item.getPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }

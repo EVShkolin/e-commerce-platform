@@ -10,3 +10,7 @@ spring:
     password: ${ORDER_DB_PASSWORD:order-db-password}
   liquibase:
     change-log: classpath:db/changelog/db.changelog-master.yml
+
+service:
+  shopping-cart:
+    base-url: ${SHOPPING_CART_BASE_URL:http://localhost:8083/api/v1/cart}
