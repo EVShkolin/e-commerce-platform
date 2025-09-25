@@ -1,0 +1,12 @@
+server:
+  port: 8085
+
+spring:
+  application:
+    name: payment-service
+  datasource:
+    url: jdbc:postgresql://${PAYMENT_DB_HOST:localhost}:${PAYMENT_DB_PORT:5404}/payment_db
+    username: ${PAYMENT_DB_USERNAME:payment-db-username}
+    password: ${PAYMENT_DB_PASSWORD:payment-db-password}
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.yml

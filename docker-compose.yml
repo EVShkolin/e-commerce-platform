@@ -148,6 +148,40 @@ services:
       - tmp1:/docker-entrypoint-initdb.d
       - tmp1:/docker-entrypoint-preinitdb.d
 
+  payment_service:
+    build:
+      context: ./payment-service
+      dockerfile: Dockerfile
+    container_name: payment-service
+    ports:
+      - "8085:8085"
+    environment:
+      PAYMENT_DB_HOST: payment_db
+      PAYMENT_DB_PORT: 5404
+      PAYMENT_DB_USERNAME: ${PAYMENT_DB_USERNAME}
+      PAYMENT_DB_PASSWORD: ${PAYMENT_DB_PASSWORD}
+    depends_on:
+      - payment_db
+    networks:
+      - app-network
+
+  payment_db:
+    image: bitnami/postgresql:latest
+    container_name: payment_db
+    ports:
+      - "5404:5404"
+    environment:
+      POSTGRESQL_PORT_NUMBER: 5404
+      POSTGRESQL_DATABASE: payment_db
+      POSTGRESQL_USERNAME: ${PAYMENT_DB_USERNAME}
+      POSTGRESQL_PASSWORD: ${PAYMENT_DB_PASSWORD}
+    networks:
+      - app-network
+    volumes:
+      - payment-db-data:/bitnami/postgresql
+      - tmp1:/docker-entrypoint-initdb.d
+      - tmp1:/docker-entrypoint-preinitdb.d
+
 networks:
   app-network:
     driver: bridge
@@ -158,6 +192,7 @@ volumes:
   product-db-data:
   cart-db-data:
   order-db-data:
+  payment-db-data:
   tmp1:
     driver: local
     driver_opts:

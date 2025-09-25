@@ -1,5 +1,6 @@
 package org.project.userservice.model;
 
+import jakarta.validation.constraints.Email;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -22,6 +23,7 @@ public class User {
     private String username;
 
     @Indexed(unique = true, name = "email_index")
+    @Email
     private String email;
 
     @CreatedDate
