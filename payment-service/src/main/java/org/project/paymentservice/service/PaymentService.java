@@ -1,10 +1,15 @@
 package org.project.paymentservice.service;
 
+import org.project.paymentservice.dto.OrderDto;
+import org.project.paymentservice.dto.PaymentSession;
+
+import java.util.UUID;
+
 public interface PaymentService {
 
-    void handleOrderCreatedEvent();
+    PaymentSession createPayment(OrderDto orderDto);
 
-    void handlePaymentSuccess();
+    void processStripeEvent(String payload, String sigHeader);
 
-    void handlePaymentFailure();
+    void processTestEvent(UUID paymentId);
 }

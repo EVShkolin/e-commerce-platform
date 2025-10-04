@@ -10,3 +10,8 @@ spring:
     password: ${PAYMENT_DB_PASSWORD:payment-db-password}
   liquibase:
     change-log: classpath:db/changelog/db.changelog-master.yml
+  jpa:
+    show-sql: true
+
+stripe:
+  webhook-secret: ${STRIPE_WEBHOOK_SECRET:secret}

@@ -3,8 +3,10 @@ package org.project.orderservice.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.project.orderservice.client.CartClient;
+import org.project.orderservice.client.PaymentClient;
 import org.project.orderservice.dto.OrderDto;
 import org.project.orderservice.dto.OrderRequest;
+import org.project.orderservice.dto.PaymentSession;
 import org.project.orderservice.dto.StatusUpdateRequest;
 import org.project.orderservice.exceptionhandler.exception.EmptyOrderException;
 import org.project.orderservice.exceptionhandler.exception.OrderNotFoundException;
@@ -23,25 +25,22 @@ public class OrderServiceImpl implements OrderService {
 
     private final OrderRepository orderRepository;
     private final CartClient cartClient;
+    private final PaymentClient paymentClient;
     private final OrderMapper orderMapper;
 
     @Override
     @Transactional
-    public OrderDto createOrder(OrderRequest orderRequest) {
+    public PaymentSession createOrder(OrderRequest orderRequest) {
         Order order = orderMapper.toOrder(cartClient.getCartByUserId(orderRequest.getUserId()));
         if (order.getItems().isEmpty()) {
             throw new EmptyOrderException(order.getUserId());
         }
-
         order.setShippingDetails(orderMapper.toShippingDetails(orderRequest));
-
         order = orderRepository.save(order);
-
         log.info("Created new order for user {}", orderRequest.getUserId());
         OrderDto orderDto = orderMapper.toDto(order);
-        // todo async call Payment service
         // todo clear cart
-        return orderDto;
+        return paymentClient.createPayment(orderDto);
     }
 
     @Override

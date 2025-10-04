@@ -1,0 +1,13 @@
+databaseChangeLog:
+  - changeSet:
+      id: 001
+      author: EV
+      changes:
+        - addColumn:
+            tableName: payment
+            columns:
+              - column:
+                  name: stripe_payment_intent_id
+                  type: varchar(50)
+                  constraints:
+                    nullable: true
