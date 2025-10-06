@@ -3,7 +3,6 @@ package org.project.orderservice.dto;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import org.project.orderservice.model.OrderItem;
 import org.project.orderservice.model.OrderStatus;
 import org.project.orderservice.model.ShippingDetails;
 

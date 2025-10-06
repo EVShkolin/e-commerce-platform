@@ -14,3 +14,5 @@ spring:
 service:
   shopping-cart:
     base-url: ${SHOPPING_CART_BASE_URL:http://localhost:8083/api/v1/cart}
+  payment:
+    base-url: ${PAYMENT_BASE_URL:http://localhost:8085/api/v1/payment}

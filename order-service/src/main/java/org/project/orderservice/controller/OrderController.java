@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.project.orderservice.dto.OrderDto;
 import org.project.orderservice.dto.OrderRequest;
+import org.project.orderservice.dto.PaymentSession;
 import org.project.orderservice.dto.StatusUpdateRequest;
 import org.project.orderservice.service.OrderService;
 import org.springframework.http.HttpStatus;
@@ -30,7 +31,7 @@ public class OrderController {
     }
 
     @PostMapping
-    public ResponseEntity<OrderDto> createOrder(@RequestBody @Valid OrderRequest orderRequest) {
+    public ResponseEntity<PaymentSession> createOrder(@RequestBody @Valid OrderRequest orderRequest) {
         return new ResponseEntity<>(orderService.createOrder(orderRequest), HttpStatus.CREATED);
     }
 
