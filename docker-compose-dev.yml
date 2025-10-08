@@ -93,6 +93,22 @@ services:
       - tmp1:/docker-entrypoint-initdb.d
       - tmp1:/docker-entrypoint-preinitdb.d
 
+  notification_db:
+    image: bitnami/postgresql:latest
+    container_name: notification_db
+    ports:
+      - "5405:5432"
+    environment:
+      POSTGRESQL_DATABASE: notification_db
+      POSTGRESQL_USERNAME: ${NOTIFICATION_DB_USERNAME}
+      POSTGRESQL_PASSWORD: ${NOTIFICATION_DB_PASSWORD}
+    networks:
+      - app-network
+    volumes:
+      - notification-db-data:/bitnami/postgresql
+      - tmp1:/docker-entrypoint-initdb.d
+      - tmp1:/docker-entrypoint-preinitdb.d
+
 networks:
   app-network:
     driver: bridge
@@ -104,6 +120,7 @@ volumes:
   cart-db-data:
   order-db-data:
   payment-db-data:
+  notification-db-data:
   tmp1:
     driver: local
     driver_opts:
