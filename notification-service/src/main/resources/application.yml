@@ -1,0 +1,14 @@
+server:
+  port: 8086
+
+spring:
+  application:
+    name: notification-service
+  datasource:
+    url: jdbc:postgresql://${NOTIFICATION_DB_HOST:localhost}:${NOTIFICATION_DB_PORT:5405}/notification_db
+    username: ${NOTIFICATION_DB_USERNAME:notification-db-username}
+    password: ${NOTIFICATION_DB_PASSWORD:notification-db-password}
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.yml
+resend:
+  api-key: ${RESEND_API_KEY}

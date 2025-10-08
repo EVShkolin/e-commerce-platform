@@ -182,6 +182,40 @@ services:
       - tmp1:/docker-entrypoint-initdb.d
       - tmp1:/docker-entrypoint-preinitdb.d
 
+  notification_service:
+    build:
+      context: ./notification-service
+      dockerfile: Dockerfile
+    container_name: notification-service
+    ports:
+      - "8086:8086"
+    environment:
+      PAYMENT_DB_HOST: payment_db
+      PAYMENT_DB_PORT: 5405
+      PAYMENT_DB_USERNAME: ${NOTIFICATION_DB_USERNAME}
+      PAYMENT_DB_PASSWORD: ${NOTIFICATION_DB_PASSWORD}
+    depends_on:
+      - notification_db
+    networks:
+      - app-network
+
+  notification_db:
+    image: bitnami/postgresql:latest
+    container_name: notification_db
+    ports:
+      - "5405:5405"
+    environment:
+      POSTGRESQL_PORT_NUMBER: 5405
+      POSTGRESQL_DATABASE: notification_db
+      POSTGRESQL_USERNAME: ${NOTIFICATION_DB_USERNAME}
+      POSTGRESQL_PASSWORD: ${NOTIFICATION_DB_PASSWORD}
+    networks:
+      - app-network
+    volumes:
+      - notification-db-data:/bitnami/postgresql
+      - tmp1:/docker-entrypoint-initdb.d
+      - tmp1:/docker-entrypoint-preinitdb.d
+
 networks:
   app-network:
     driver: bridge
@@ -193,6 +227,7 @@ volumes:
   cart-db-data:
   order-db-data:
   payment-db-data:
+  notification-db-data:
   tmp1:
     driver: local
     driver_opts:

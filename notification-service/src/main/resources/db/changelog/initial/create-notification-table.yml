@@ -1,0 +1,46 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-notification
+      author: EV
+      changes:
+        - createTable:
+            tableName: notification
+            columns:
+              - column:
+                  name: notification_id
+                  type: bigserial
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+              - column:
+                  name: resend_id
+                  type: varchar(36)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: user_id
+                  type: varchar(36)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: email
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: type
+                  type: varchar(20)
+                  constraints:
+                    nullable: false
+                    checkConstraint: "type IN ('USER_REGISTERED', 'ORDER_PAID')"
+              - column:
+                  name: status
+                  type: varchar(10)
+                  constraints:
+                    nullable: false
+                    checkConstraint: "status IN ('PENDING', 'SENT', 'FAILED')"
+              - column:
+                  name: sent_at
+                  type: timestamp with time zone
+                  constraints:
+                    nullable: true
