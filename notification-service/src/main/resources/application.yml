@@ -10,5 +10,19 @@ spring:
     password: ${NOTIFICATION_DB_PASSWORD:notification-db-password}
   liquibase:
     change-log: classpath:db/changelog/db.changelog-master.yml
-resend:
-  api-key: ${RESEND_API_KEY}
+  kafka:
+    bootstrap-servers: ${KAFKA_HOST:localhost}:9092
+    consumer:
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      group-id: payment-service-group
+      properties:
+        spring.json.trusted.packages: "*"
+        spring.json.type.mapping: >
+          orderConfirmedEvent:org.project.notificationservice.event.OrderConfirmedEvent,
+          userRegisteredEvent:org.project.notificationservice.event.UserRegisteredEvent
+
+kafka:
+  topics:
+    orders-confirmed: orders-confirmed
+    users-registered: users-registered

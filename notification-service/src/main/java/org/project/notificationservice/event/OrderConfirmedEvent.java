@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-public class OrderPaidEvent {
+public class OrderConfirmedEvent {
 
     private String userId;
 

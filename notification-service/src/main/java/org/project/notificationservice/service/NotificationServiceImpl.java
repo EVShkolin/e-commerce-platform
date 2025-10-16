@@ -6,11 +6,12 @@ import com.resend.services.emails.model.CreateEmailOptions;
 import com.resend.services.emails.model.CreateEmailResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.project.notificationservice.event.OrderPaidEvent;
+import org.project.notificationservice.event.OrderConfirmedEvent;
 import org.project.notificationservice.event.UserRegisteredEvent;
 import org.project.notificationservice.model.Notification;
 import org.project.notificationservice.model.NotificationType;
 import org.project.notificationservice.repository.NotificationRepository;
+import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -22,8 +23,9 @@ public class NotificationServiceImpl implements NotificationService {
     private final Resend resend;
 
     @Override
+    @KafkaListener(topics = "${kafka.topics.users-registered}")
     public void sendUserRegisteredNotification(UserRegisteredEvent event) {
-        String text = "Thank you for signing up, " + event.getUserName();
+        String text = "Thank you for signing up, " + event.getUsername();
         sendNotification(event.getUserId(),
                 NotificationType.USER_REGISTERED,
                 event.getEmail(),
@@ -32,7 +34,8 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
-    public void sendOrderPaidNotification(OrderPaidEvent event) {
+    @KafkaListener(topics = "${kafka.topics.orders-confirmed}")
+    public void sendOrderPaidNotification(OrderConfirmedEvent event) {
         String text = "Thank you for your purchase, order id: " + event.getOrderId();
         sendNotification(event.getUserId(),
                 NotificationType.ORDER_PAID,

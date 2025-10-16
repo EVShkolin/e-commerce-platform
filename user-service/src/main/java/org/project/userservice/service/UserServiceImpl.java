@@ -3,10 +3,13 @@ package org.project.userservice.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.project.userservice.dto.UserDto;
+import org.project.userservice.event.UserRegisteredEvent;
 import org.project.userservice.exceptionhandler.exception.UserNotFoundException;
 import org.project.userservice.mapper.UserMapper;
 import org.project.userservice.model.User;
 import org.project.userservice.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,8 +20,12 @@ import java.util.List;
 @Slf4j
 public class UserServiceImpl implements UserService {
 
+    @Value("${kafka.topics.users-registered}")
+    private String usersRegisteredTopic;
+
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+    private final KafkaTemplate<String, Object> kafkaTemplate;
 
     @Override
     public List<UserDto> findAll() {
@@ -28,8 +35,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public UserDto findUserById(String userId) {
+        log.debug("IN UserServiceImpl find user by id ({})}", userId);
+        return userRepository.findById(userId)
+                .map(userMapper::toDto)
+                .orElseThrow(() -> new UserNotFoundException(userId));
+    }
+
+    @Override
     public UserDto findUserByEmail(String email) {
-        log.debug("IN UserServiceImpl find user {}",email);
+        log.debug("IN UserServiceImpl find user {}", email);
 
         return userRepository.findUserByEmail(email)
                 .map(userMapper::toDto)
@@ -41,7 +56,13 @@ public class UserServiceImpl implements UserService {
         log.info("IN UserServiceImpl save user {}", userDto);
 
         User user = userMapper.toEntity(userDto);
-        return userMapper.toDto(userRepository.save(user));
+        user = userRepository.save(user);
+
+        UserRegisteredEvent userRegisteredEvent =
+                new UserRegisteredEvent(user.getId(), user.getEmail(), user.getUsername());
+        kafkaTemplate.send(usersRegisteredTopic, userRegisteredEvent);
+
+        return userMapper.toDto(user);
     }
 
     @Override

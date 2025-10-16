@@ -13,6 +13,6 @@ public class UserRegisteredEvent {
 
     private String email;
 
-    private String userName;
+    private String username;
 
 }

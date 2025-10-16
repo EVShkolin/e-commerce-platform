@@ -10,9 +10,33 @@ spring:
     password: ${ORDER_DB_PASSWORD:order-db-password}
   liquibase:
     change-log: classpath:db/changelog/db.changelog-master.yml
+  kafka:
+    bootstrap-servers: ${KAFKA_HOST:localhost}:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      properties:
+        spring.json.type.mapping: >
+          cartClearEvent:org.project.orderservice.event.CartClearEvent,
+          orderConfirmedEvent:org.project.orderservice.event.OrderConfirmedEvent
+    consumer:
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      group-id: order-service-group
+      properties:
+        spring.json.trusted.packages: "*"
+        spring.json.type.mapping: orderPaidEvent:org.project.orderservice.event.OrderPaidEvent
+
+kafka:
+  topics:
+    orders-paid: orders-paid
+    carts-cleared: carts-cleared
+    orders-confirmed: orders-confirmed
 
 service:
   shopping-cart:
     base-url: ${SHOPPING_CART_BASE_URL:http://localhost:8083/api/v1/cart}
   payment:
     base-url: ${PAYMENT_BASE_URL:http://localhost:8085/api/v1/payment}
+  user:
+    base-url: ${USER_BASE_URL:http://localhost:8081/api/v1/users}

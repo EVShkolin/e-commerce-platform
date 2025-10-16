@@ -12,6 +12,17 @@ spring:
     change-log: classpath:db/changelog/db.changelog-master.yml
   jpa:
     show-sql: true
+  kafka:
+    bootstrap-servers: ${KAFKA_HOST:localhost}:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      properties:
+        spring.json.type.mapping: orderPaidEvent:org.project.paymentservice.event.OrderPaidEvent
 
 stripe:
   webhook-secret: ${STRIPE_WEBHOOK_SECRET:secret}
+
+kafka:
+  topics:
+    orders-paid: orders-paid
