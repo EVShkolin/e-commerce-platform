@@ -10,6 +10,19 @@ spring:
     password: ${CART_DB_PASSWORD:cart-db-password}
   liquibase:
     change-log: classpath:db/changelog/db.changelog-master.yml
+  kafka:
+    bootstrap-servers: ${KAFKA_HOST:localhost}:9092
+    consumer:
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      group-id: cart-service-group
+      properties:
+        spring.json.trusted.packages: "*"
+        spring.json.type.mapping: cartClearEvent:org.project.shoppingcartservice.event.CartClearEvent
+
+kafka:
+  topics:
+    carts-cleared: carts-cleared
 
 service:
   product-catalog:

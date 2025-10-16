@@ -2,6 +2,7 @@ package org.project.userservice.controller;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.project.userservice.dto.UserDto;
 import org.project.userservice.service.UserService;
@@ -23,10 +24,15 @@ public class UserController {
         return new ResponseEntity<>(userService.findAll(), HttpStatus.OK);
     }
 
-    @GetMapping("/{email}")
-    public ResponseEntity<UserDto> getUserByEmail(@PathVariable @Email String email) {
-        return new ResponseEntity<>(userService.findUserByEmail(email), HttpStatus.OK);
+    @GetMapping("/{userId}")
+    public ResponseEntity<UserDto> getUserById(@PathVariable String userId) {
+        return new ResponseEntity<>(userService.findUserById(userId), HttpStatus.OK);
     }
+
+//    @GetMapping("/{email}")
+//    public ResponseEntity<UserDto> getUserByEmail(@PathVariable @Email String email) {
+//        return new ResponseEntity<>(userService.findUserByEmail(email), HttpStatus.OK);
+//    }
 
     @PostMapping
     public ResponseEntity<UserDto> saveUser(@RequestBody @Valid UserDto userDto) {

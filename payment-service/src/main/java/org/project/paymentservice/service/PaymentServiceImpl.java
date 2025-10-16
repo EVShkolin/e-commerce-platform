@@ -10,11 +10,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.project.paymentservice.dto.OrderDto;
 import org.project.paymentservice.dto.PaymentSession;
+import org.project.paymentservice.event.OrderPaidEvent;
 import org.project.paymentservice.exceptionhandler.exception.PaymentNotFoundException;
 import org.project.paymentservice.model.Payment;
 import org.project.paymentservice.model.PaymentStatus;
 import org.project.paymentservice.repository.PaymentRepository;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
@@ -26,9 +28,12 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Value("${stripe.webhook-secret}")
     private String webhookSecret;
+    @Value("${kafka.topics.orders-paid}")
+    private String ordersPaidTopic;
 
     private final PaymentRepository paymentRepository;
     private final StripeService stripeService;
+    private final KafkaTemplate<String, OrderPaidEvent> kafkaTemplate;
 
     @Override
     public PaymentSession createPayment(@Valid OrderDto orderDto) {
@@ -66,7 +71,10 @@ public class PaymentServiceImpl implements PaymentService {
                 .orElseThrow(() -> new PaymentNotFoundException(paymentId.toString()));
         payment.setStatus(PaymentStatus.PAID);
         paymentRepository.save(payment);
-        log.info("Updated payment status to paid id:{}", payment.getId());
+        log.info("TEST Updated payment status to paid id:{}", payment.getId());
+
+        OrderPaidEvent orderPaidEvent = new OrderPaidEvent(payment.getUserId(), payment.getOrderId());
+        kafkaTemplate.send(ordersPaidTopic, orderPaidEvent);
     }
 
     private void handleStripeEvent(Event event) {
@@ -85,7 +93,10 @@ public class PaymentServiceImpl implements PaymentService {
                 .orElseThrow(() -> new PaymentNotFoundException(paymentIntent.getId()));
         payment.setStatus(PaymentStatus.PAID);
         paymentRepository.save(payment);
-    }
+        log.info("Updated payment status to paid id:{}", payment.getId());
 
+        OrderPaidEvent orderPaidEvent = new OrderPaidEvent(payment.getUserId(), payment.getOrderId());
+        kafkaTemplate.send(ordersPaidTopic, orderPaidEvent);
+    }
 
 }

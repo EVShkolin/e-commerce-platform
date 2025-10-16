@@ -5,11 +5,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.project.shoppingcartservice.client.ProductClient;
 import org.project.shoppingcartservice.dto.CartDto;
 import org.project.shoppingcartservice.dto.CartItemDto;
+import org.project.shoppingcartservice.event.CartClearEvent;
 import org.project.shoppingcartservice.mapper.CartItemMapper;
 import org.project.shoppingcartservice.model.Cart;
 import org.project.shoppingcartservice.model.CartItem;
 import org.project.shoppingcartservice.repository.CartItemRepository;
 import org.project.shoppingcartservice.repository.CartRepository;
+import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -64,11 +66,17 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    @Transactional
     public void clearCart(String userId) {
         Cart cart = cartRepository.findCartByUserId(userId);
-
-        if (cart != null)
+        if (cart != null) {
             cart.clear();
+            cartRepository.save(cart);
+        }
+    }
+
+    @KafkaListener(topics = "${kafka.topics.carts-cleared}")
+    public void handleCArtClearEvent(CartClearEvent event) {
+        log.debug("Received event to clear cart for user {}", event.userId());
+        clearCart(event.userId());
     }
 }

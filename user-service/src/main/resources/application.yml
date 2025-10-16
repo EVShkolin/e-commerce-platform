@@ -13,6 +13,18 @@ spring:
       auto-index-creation: true
   application:
     name: user-service
+  kafka:
+    bootstrap-servers: ${KAFKA_HOST:localhost}:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      properties:
+        spring.json.type.mapping: userRegisteredEvent:org.project.userservice.event.UserRegisteredEvent
+
+kafka:
+  topics:
+    users-registered: users-registered
+
 logging:
   level:
     org.project.userservice: DEBUG

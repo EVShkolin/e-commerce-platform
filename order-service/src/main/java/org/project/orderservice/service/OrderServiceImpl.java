@@ -4,15 +4,23 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.project.orderservice.client.CartClient;
 import org.project.orderservice.client.PaymentClient;
+import org.project.orderservice.client.UserClient;
 import org.project.orderservice.dto.OrderDto;
 import org.project.orderservice.dto.OrderRequest;
 import org.project.orderservice.dto.PaymentSession;
 import org.project.orderservice.dto.StatusUpdateRequest;
+import org.project.orderservice.event.CartClearEvent;
+import org.project.orderservice.event.OrderConfirmedEvent;
+import org.project.orderservice.event.OrderPaidEvent;
 import org.project.orderservice.exceptionhandler.exception.EmptyOrderException;
 import org.project.orderservice.exceptionhandler.exception.OrderNotFoundException;
 import org.project.orderservice.mapper.OrderMapper;
 import org.project.orderservice.model.Order;
+import org.project.orderservice.model.OrderStatus;
 import org.project.orderservice.repository.OrderRepository;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,10 +31,17 @@ import java.util.List;
 @Slf4j
 public class OrderServiceImpl implements OrderService {
 
+    @Value("${kafka.topics.carts-cleared}")
+    private String cartsClearedTopic;
+    @Value("${kafka.topics.orders-confirmed}")
+    private String ordersConfirmedTopic;
+
     private final OrderRepository orderRepository;
     private final CartClient cartClient;
     private final PaymentClient paymentClient;
+    private final UserClient userClient;
     private final OrderMapper orderMapper;
+    private final KafkaTemplate<String, Object> kafkaTemplate;
 
     @Override
     @Transactional
@@ -39,7 +54,6 @@ public class OrderServiceImpl implements OrderService {
         order = orderRepository.save(order);
         log.info("Created new order for user {}", orderRequest.getUserId());
         OrderDto orderDto = orderMapper.toDto(order);
-        // todo clear cart
         return paymentClient.createPayment(orderDto);
     }
 
@@ -69,5 +83,21 @@ public class OrderServiceImpl implements OrderService {
 
         log.info("Order {} paid", orderId);
         return orderMapper.toDto(order);
+    }
+
+    @KafkaListener(topics = "${kafka.topics.orders-paid}")
+    public void handleOrderPaidEvent(OrderPaidEvent event) {
+        log.debug("Received order paid event for order {}", event.orderId());
+        Order order = orderRepository.findById(event.orderId())
+                .orElseThrow(() -> new OrderNotFoundException(event.orderId()));
+        order.setStatus(OrderStatus.PAID);
+        orderRepository.save(order);
+
+        CartClearEvent cartClearEvent = new CartClearEvent(event.userId());
+        kafkaTemplate.send(cartsClearedTopic, cartClearEvent);
+
+        String userEmail = userClient.getUserEmail(event.userId());
+        OrderConfirmedEvent orderConfirmedEvent = new OrderConfirmedEvent(event.userId(), userEmail, event.orderId());
+        kafkaTemplate.send(ordersConfirmedTopic, orderConfirmedEvent);
     }
 }
